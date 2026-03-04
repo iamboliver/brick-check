@@ -4,6 +4,7 @@ struct SettingsTabView: View {
     private static let keychainKey = "rebrickable_api_key"
     private static let userTokenKey = "rebrickable_user_token"
 
+    @FocusState private var isFieldFocused: Bool
     @State private var apiKey: String = ""
     @State private var showSavedConfirmation = false
     @State private var userToken: String = ""
@@ -15,11 +16,13 @@ struct SettingsTabView: View {
             Form {
                 Section {
                     SecureField("Rebrickable API Key", text: $apiKey)
+                        .focused($isFieldFocused)
                         .textContentType(.password)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
 
                     Button("Save API Key") {
+                        isFieldFocused = false
                         let success = KeychainHelper.save(key: Self.keychainKey, value: apiKey)
                         if success {
                             showSavedConfirmation = true
@@ -39,6 +42,7 @@ struct SettingsTabView: View {
                         .textInputAutocapitalization(.never)
 
                     Button("Save Token") {
+                        isFieldFocused = false
                         let success = KeychainHelper.save(key: Self.userTokenKey, value: userToken)
                         if success {
                             showTokenSavedConfirmation = true
@@ -80,6 +84,14 @@ struct SettingsTabView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        isFieldFocused = false
+                    }
+                }
+            }
             .alert("API Key Saved", isPresented: $showSavedConfirmation) {
                 Button("OK", role: .cancel) {}
             }

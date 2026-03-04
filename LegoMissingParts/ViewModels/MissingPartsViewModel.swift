@@ -34,6 +34,21 @@ final class MissingPartsViewModel {
         missingParts = GlobalMissingPart.aggregate(from: parts, sortedBy: sortOption)
     }
 
+    func markAsReplaced(_ part: GlobalMissingPart, modelContext: ModelContext) {
+        let partNum = part.partNum
+        let colorId = part.colorId
+        let descriptor = FetchDescriptor<LegoPartInstance>(
+            predicate: #Predicate { $0.partNum == partNum && $0.colorId == colorId && $0.missingQty > 0 }
+        )
+        guard let instances = try? modelContext.fetch(descriptor) else { return }
+        for instance in instances {
+            instance.replacedQty += instance.missingQty
+            instance.missingQty = 0
+        }
+        try? modelContext.save()
+        refresh(modelContext: modelContext)
+    }
+
     func generateExport() async {
         let exportService = ExportService()
         switch exportFormat {

@@ -1,37 +1,37 @@
 import SwiftData
 import SwiftUI
 
-struct MissingPartsTabView: View {
+struct ReplacedPartsTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var viewModel = MissingPartsViewModel()
+    @State private var viewModel = ReplacedPartsViewModel()
 
     private var uniquePartCount: Int {
-        viewModel.missingParts.count
+        viewModel.replacedParts.count
     }
 
-    private var totalMissingQty: Int {
-        viewModel.missingParts.reduce(0) { $0 + $1.totalMissingQty }
+    private var totalReplacedQty: Int {
+        viewModel.replacedParts.reduce(0) { $0 + $1.totalReplacedQty }
     }
 
     private var setsAffected: Int {
-        Set(viewModel.missingParts.flatMap(\.contributingSets)).count
+        Set(viewModel.replacedParts.flatMap(\.contributingSets)).count
     }
 
     var body: some View {
         NavigationStack {
             Group {
-                if viewModel.missingParts.isEmpty {
+                if viewModel.replacedParts.isEmpty {
                     ContentUnavailableView(
-                        "No Missing Parts",
+                        "No Replaced Parts",
                         systemImage: "checkmark.circle",
-                        description: Text("All parts accounted for. Tap parts in a set to mark them as missing.")
+                        description: Text("Swipe left on missing parts to mark them as replaced.")
                     )
                 } else {
                     List {
                         Section {
                             SummaryHeaderView(stats: [
                                 StatCard(icon: "puzzlepiece.fill", value: uniquePartCount, label: "Unique", iconColor: AppTheme.legoYellow),
-                                StatCard(icon: "number", value: totalMissingQty, label: "Total Qty", iconColor: AppTheme.legoRed),
+                                StatCard(icon: "number", value: totalReplacedQty, label: "Total Qty", iconColor: AppTheme.completedGreen),
                                 StatCard(icon: "square.stack.3d.up.fill", value: setsAffected, label: "Sets", iconColor: .orange),
                             ])
                             .listRowInsets(EdgeInsets())
@@ -39,15 +39,15 @@ struct MissingPartsTabView: View {
                         }
 
                         Section {
-                            ForEach(viewModel.filteredMissingParts) { part in
-                                MissingPartRowView(part: part)
+                            ForEach(viewModel.filteredReplacedParts) { part in
+                                ReplacedPartRowView(part: part)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button {
-                                            viewModel.markAsReplaced(part, modelContext: modelContext)
+                                            viewModel.markAsNotReplaced(part, modelContext: modelContext)
                                         } label: {
-                                            Label("Replaced", systemImage: "checkmark.circle.fill")
+                                            Label("Undo", systemImage: "arrow.uturn.backward")
                                         }
-                                        .tint(.green)
+                                        .tint(.orange)
                                     }
                             }
                         }
@@ -55,24 +55,16 @@ struct MissingPartsTabView: View {
                     .listStyle(.insetGrouped)
                 }
             }
-            .navigationTitle("Missing Parts")
+            .navigationTitle("Replaced Parts")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $viewModel.searchText, prompt: "Search by part number")
             .toolbar {
-                if !viewModel.missingParts.isEmpty {
+                if !viewModel.replacedParts.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
                             Picker("Sort by", selection: $viewModel.sortOption) {
                                 ForEach(PartSortOption.allCases, id: \.self) { option in
                                     Text(option.rawValue).tag(option)
-                                }
-                            }
-
-                            Divider()
-
-                            Button("Export", systemImage: "square.and.arrow.up") {
-                                Task {
-                                    await viewModel.generateExport()
                                 }
                             }
                         } label: {
@@ -83,9 +75,6 @@ struct MissingPartsTabView: View {
             }
             .onChange(of: viewModel.sortOption) {
                 viewModel.refresh(modelContext: modelContext)
-            }
-            .sheet(isPresented: $viewModel.showExportOptions) {
-                ExportOptionsView(viewModel: viewModel)
             }
             .onAppear {
                 viewModel.refresh(modelContext: modelContext)

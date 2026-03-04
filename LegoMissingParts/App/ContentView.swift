@@ -11,6 +11,10 @@ struct ContentView: View {
                 MissingPartsTabView()
             }
 
+            Tab("Replaced", systemImage: "checkmark.circle.fill") {
+                ReplacedPartsTabView()
+            }
+
             Tab("Settings", systemImage: "gearshape.fill") {
                 SettingsTabView()
             }

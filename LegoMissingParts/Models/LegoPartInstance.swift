@@ -11,6 +11,7 @@ final class LegoPartInstance {
     var imageUrl: String?
     var requiredQty: Int
     var missingQty: Int
+    var replacedQty: Int
     var isSpare: Bool
 
     var elementId: String?
@@ -28,6 +29,7 @@ final class LegoPartInstance {
         imageUrl: String?,
         requiredQty: Int,
         missingQty: Int = 0,
+        replacedQty: Int = 0,
         isSpare: Bool,
         elementId: String? = nil,
         brickLinkPartNum: String? = nil,
@@ -41,6 +43,7 @@ final class LegoPartInstance {
         self.imageUrl = imageUrl
         self.requiredQty = requiredQty
         self.missingQty = missingQty
+        self.replacedQty = replacedQty
         self.isSpare = isSpare
         self.elementId = elementId
         self.brickLinkPartNum = brickLinkPartNum
