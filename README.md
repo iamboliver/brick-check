@@ -1,4 +1,4 @@
-# BrickCheck
+# BrickSweep
 
 A native iOS app for tracking missing parts across your brick sets. Import sets from [Rebrickable](https://rebrickable.com), tap to mark pieces as missing, and export a BrickLink wanted list to order replacements.
 

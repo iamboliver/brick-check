@@ -23,10 +23,10 @@ targets:
       path: LegoMissingParts/Info.plist
       properties:
         UILaunchScreen: {}
-        CFBundleDisplayName: BrickCheck
+        CFBundleDisplayName: BrickSweep
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.oliverbarwell.BrickCheck
+        PRODUCT_BUNDLE_IDENTIFIER: com.oliverbarwell.BrickSweep
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   LegoMissingPartsTests:
@@ -39,6 +39,6 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        PRODUCT_BUNDLE_IDENTIFIER: com.oliverbarwell.BrickCheckTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.oliverbarwell.BrickSweepTests
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/LegoMissingParts.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LegoMissingParts"
         BUNDLE_LOADER: "$(TEST_HOST)"

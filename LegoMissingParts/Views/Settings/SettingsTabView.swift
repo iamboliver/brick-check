@@ -61,7 +61,7 @@ struct SettingsTabView: View {
                         Text(message)
                             .foregroundStyle(.red)
                     } else {
-                        Text("BrickCheck uses Rebrickable's free community database of 1M+ LEGO sets and parts. Not affiliated with or endorsed by Rebrickable.")
+                        Text("BrickSweep uses Rebrickable's free community database of 1M+ LEGO sets and parts. Not affiliated with or endorsed by Rebrickable.")
                     }
                 }
 
@@ -98,10 +98,10 @@ struct SettingsTabView: View {
                     Label("Your API key and user token are stored securely in your device's Keychain and are only sent directly to rebrickable.com. This app has no server — your data never leaves your device.", systemImage: "lock.shield")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    Link(destination: URL(string: "https://github.com/iamboliver/brick-check/blob/main/PRIVACY.md")!) {
+                    Link(destination: URL(string: "https://github.com/iamboliver/brick-sweep/blob/main/PRIVACY.md")!) {
                         Label("Privacy Policy", systemImage: "hand.raised")
                     }
-                    Link(destination: URL(string: "https://github.com/iamboliver/brick-check")!) {
+                    Link(destination: URL(string: "https://github.com/iamboliver/brick-sweep")!) {
                         Label("View Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 } header: {
