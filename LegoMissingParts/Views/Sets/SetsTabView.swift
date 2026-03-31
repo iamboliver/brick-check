@@ -38,11 +38,11 @@ struct SetsTabView: View {
                         }
                         .tint(AppTheme.legoYellow)
                     } else {
-                        ContentUnavailableView(
-                            "No Sets Added",
-                            systemImage: "square.stack.3d.up.slash",
-                            description: Text("Enter a set number above to get started.")
-                        )
+                        ContentUnavailableView {
+                            Label("Add Your First Set", systemImage: "square.stack.3d.up.fill")
+                        } description: {
+                            Text("Search by set number above to import your LEGO set and start tracking missing pieces.")
+                        }
                         .tint(AppTheme.legoYellow)
                     }
                 } else {

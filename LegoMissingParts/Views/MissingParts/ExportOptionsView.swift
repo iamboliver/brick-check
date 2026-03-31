@@ -1,8 +1,10 @@
+import StoreKit
 import SwiftUI
 
 struct ExportOptionsView: View {
     @Bindable var viewModel: MissingPartsViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     @State private var copied = false
 
     var body: some View {
@@ -43,6 +45,9 @@ struct ExportOptionsView: View {
                         Task {
                             try? await Task.sleep(for: .seconds(2))
                             copied = false
+                            if viewModel.exportFormat == .brickLinkXML {
+                                requestReview()
+                            }
                         }
                     } label: {
                         Label(
