@@ -10,8 +10,6 @@ struct SetsTabView: View {
         )
     )
     @Environment(AppNavigator.self) private var navigator
-    @State private var showDeleteConfirmation = false
-    @State private var setToDelete: LegoSet?
     @State private var hasAPIKey = APIKeyProvider.getAPIKey() != nil
 
     private var totalMissingCount: Int {
@@ -63,9 +61,8 @@ struct SetsTabView: View {
                                 }
                             }
                             .onDelete { indexSet in
-                                if let index = indexSet.first {
-                                    setToDelete = sets[index]
-                                    showDeleteConfirmation = true
+                                for index in indexSet {
+                                    viewModel.deleteSet(sets[index], modelContext: modelContext)
                                 }
                             }
                         }
@@ -99,17 +96,6 @@ struct SetsTabView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                 }
-            }
-            .confirmationDialog(
-                "Delete Set",
-                isPresented: $showDeleteConfirmation,
-                presenting: setToDelete
-            ) { legoSet in
-                Button("Delete \(legoSet.name)", role: .destructive) {
-                    viewModel.deleteSet(legoSet, modelContext: modelContext)
-                }
-            } message: { legoSet in
-                Text("This will delete \(legoSet.name) and all its part data. This cannot be undone.")
             }
         }
     }

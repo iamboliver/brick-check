@@ -42,29 +42,79 @@ struct SetLoadingOverlay: View {
     }
 
     private var brickView: some View {
-        // 2×4 LEGO brick shape
-        VStack(spacing: 0) {
+        let yellow = AppTheme.legoYellow
+        let studSize: CGFloat = 14
+
+        return VStack(spacing: 0) {
             // Studs row
-            HStack(spacing: 6) {
-                ForEach(0..<4) { _ in
-                    Circle()
-                        .fill(AppTheme.legoYellow.shadow(.inner(radius: 1)))
-                        .frame(width: 10, height: 10)
+            HStack(spacing: 5) {
+                ForEach(0..<4, id: \.self) { _ in
+                    studView(color: yellow, size: studSize)
                 }
             }
-            .offset(y: 3)
+            .offset(y: studSize * 0.42)
             .zIndex(1)
 
             // Brick body
-            RoundedRectangle(cornerRadius: 4)
-                .fill(AppTheme.legoYellow)
-                .frame(width: 60, height: 28)
+            RoundedRectangle(cornerRadius: 5)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            yellow.mix(with: .white, by: 0.06),
+                            yellow,
+                            yellow.mix(with: .black, by: 0.14)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .frame(width: 70, height: 32)
+                .overlay(alignment: .bottom) {
+                    // Bottom face — gives the brick a 3D block feel
+                    UnevenRoundedRectangle(cornerRadii: .init(bottomLeading: 5, bottomTrailing: 5))
+                        .fill(yellow.mix(with: .black, by: 0.22))
+                        .frame(height: 6)
+                }
         }
-        .offset(y: bouncing ? -6 : 0)
+        .offset(y: bouncing ? -8 : 0)
         .animation(
             .spring(duration: 0.5, bounce: 0.6).repeatForever(autoreverses: true),
             value: bouncing
         )
         .onAppear { bouncing = true }
+    }
+
+    private func studView(color: Color, size: CGFloat) -> some View {
+        ZStack {
+            // Cylinder side shadow — a squashed ellipse sitting below the stud
+            Ellipse()
+                .fill(color.mix(with: .black, by: 0.28))
+                .frame(width: size, height: size * 0.38)
+                .offset(y: size * 0.52)
+
+            // Stud top face
+            Circle()
+                .fill(color)
+                .frame(width: size, height: size)
+
+            // Rim — thin dark ring for definition
+            Circle()
+                .strokeBorder(color.mix(with: .black, by: 0.2), lineWidth: 1)
+                .frame(width: size, height: size)
+
+            // Specular highlight — small soft circle offset upper-left
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [.white.opacity(0.55), .clear],
+                        center: UnitPoint(x: 0.28, y: 0.28),
+                        startRadius: 0,
+                        endRadius: size * 0.45
+                    )
+                )
+                .frame(width: size, height: size)
+        }
+        // Frame taller than the stud so the shadow ellipse isn't clipped
+        .frame(width: size, height: size + size * 0.52)
     }
 }
