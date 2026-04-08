@@ -18,6 +18,8 @@ struct RebrickableAPIClient: RebrickableAPIClientProtocol {
         session: URLSession = {
             let config = URLSessionConfiguration.default
             config.timeoutIntervalForRequest = 15
+            config.requestCachePolicy = .reloadIgnoringLocalCacheData
+            config.urlCache = nil
             return URLSession(configuration: config)
         }(),
         apiKeyProvider: @escaping @Sendable () -> String?
