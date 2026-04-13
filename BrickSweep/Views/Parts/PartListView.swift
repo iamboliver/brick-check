@@ -18,40 +18,48 @@ struct PartListView: View {
 
         VStack(spacing: 0) {
             // Summary header
-            HStack(spacing: AppTheme.Spacing.lg) {
-                CompletionRing(
-                    completed: accountedCount,
-                    total: legoSet.parts.count,
-                    size: 52
-                )
+            if !legoSet.isImporting || !legoSet.parts.isEmpty {
+                HStack(spacing: AppTheme.Spacing.lg) {
+                    CompletionRing(
+                        completed: accountedCount,
+                        total: legoSet.parts.count,
+                        size: 52
+                    )
 
-                VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
-                    if missingCount > 0 {
-                        Text("\(missingCount) of \(legoSet.parts.count) parts missing")
-                            .font(AppTheme.Typography.headline)
-                    } else {
-                        Text("All \(legoSet.parts.count) parts accounted for")
-                            .font(AppTheme.Typography.headline)
-                            .foregroundStyle(AppTheme.completedGreen)
+                    VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
+                        if missingCount > 0 {
+                            Text("\(missingCount) of \(legoSet.parts.count) parts missing")
+                                .font(AppTheme.Typography.headline)
+                        } else {
+                            Text("All \(legoSet.parts.count) parts accounted for")
+                                .font(AppTheme.Typography.headline)
+                                .foregroundStyle(AppTheme.completedGreen)
+                        }
                     }
+
+                    Spacer()
                 }
+                .padding(.horizontal, AppTheme.Spacing.lg)
+                .padding(.vertical, AppTheme.Spacing.md)
 
-                Spacer()
+                PartFilterBar(
+                    filter: $viewModel.filter,
+                    allCount: legoSet.parts.count,
+                    missingCount: missingCount,
+                    accountedCount: accountedCount
+                )
+                .padding(.horizontal)
+                .padding(.bottom, AppTheme.Spacing.sm)
             }
-            .padding(.horizontal, AppTheme.Spacing.lg)
-            .padding(.vertical, AppTheme.Spacing.md)
-
-            PartFilterBar(
-                filter: $viewModel.filter,
-                allCount: legoSet.parts.count,
-                missingCount: missingCount,
-                accountedCount: accountedCount
-            )
-            .padding(.horizontal)
-            .padding(.bottom, AppTheme.Spacing.sm)
 
             if filtered.isEmpty && !viewModel.searchText.trimmingCharacters(in: .whitespaces).isEmpty {
                 ContentUnavailableView.search(text: viewModel.searchText)
+            } else if filtered.isEmpty && legoSet.isImporting {
+                ContentUnavailableView {
+                    Label("Loading Parts", systemImage: "arrow.trianglehead.2.clockwise")
+                } description: {
+                    Text("Parts are being fetched and will appear shortly.")
+                }
             } else if filtered.isEmpty {
                 ContentUnavailableView {
                     Label(emptyTitle, systemImage: emptyIcon)
