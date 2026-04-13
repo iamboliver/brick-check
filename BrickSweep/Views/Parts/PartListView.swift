@@ -21,13 +21,17 @@ struct PartListView: View {
             if !legoSet.isImporting || !legoSet.parts.isEmpty {
                 HStack(spacing: AppTheme.Spacing.lg) {
                     CompletionRing(
-                        completed: accountedCount,
-                        total: legoSet.parts.count,
+                        completed: legoSet.isImporting ? legoSet.parts.count : accountedCount,
+                        total: legoSet.isImporting ? legoSet.numParts : legoSet.parts.count,
                         size: 52
                     )
 
                     VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
-                        if missingCount > 0 {
+                        if legoSet.isImporting {
+                            Text("\(legoSet.parts.count) of \(legoSet.numParts) parts loaded")
+                                .font(AppTheme.Typography.headline)
+                                .foregroundStyle(.secondary)
+                        } else if missingCount > 0 {
                             Text("\(missingCount) of \(legoSet.parts.count) parts missing")
                                 .font(AppTheme.Typography.headline)
                         } else {
@@ -38,6 +42,12 @@ struct PartListView: View {
                     }
 
                     Spacer()
+
+                    if legoSet.isImporting {
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(AppTheme.legoYellow)
+                    }
                 }
                 .padding(.horizontal, AppTheme.Spacing.lg)
                 .padding(.vertical, AppTheme.Spacing.md)
