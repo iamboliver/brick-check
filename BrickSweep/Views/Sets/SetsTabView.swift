@@ -77,7 +77,7 @@ struct SetsTabView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    AddSetView(viewModel: viewModel)
+                    AddSetView(viewModel: viewModel, setCount: sets.count)
                 }
             }
             .overlay {
